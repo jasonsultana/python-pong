@@ -2,8 +2,8 @@ import pygame
 from direction import *
 
 class Paddle:
-    def __init__(self, surface, width, height, colour):
-        self.rect = pygame.rect.Rect(surface.get_width() - width, 20, width, height)
+    def __init__(self, surface, left, width, height, colour):
+        self.rect = pygame.rect.Rect(left, 20, width, height)
         self.colour = colour
         self.surface = surface
         self.direction = Direction.LEFT
@@ -25,6 +25,9 @@ class Paddle:
                 self.rect.top = 0 # move flush to the top of the screen
             else:
                 self.rect.move_ip((0, -self.velocity))
+
+    def is_at_edge(self):
+        return self.rect.top == self.surface.get_height() - self.rect.height or self.rect.top == 0
 
     def draw(self):
         pygame.draw.rect(self.surface, self.colour, self.rect)

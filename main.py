@@ -14,7 +14,8 @@ screen_size = (700, 500)
 screen = pygame.display.set_mode(screen_size)
 pygame.display.set_caption("Pong")
  
-player = Paddle(screen, 50, 100, WHITE)
+player = Paddle(screen, screen.get_width() - 50, 50, 100, WHITE)
+cpu = Paddle(screen, 0, 50, 100, WHITE)
 
 # clock is used to set a max fps
 clock = pygame.time.Clock()
@@ -50,11 +51,20 @@ while running:
         print("game running")
 
         # game logic
+        if (cpu.is_at_edge()):
+            if (cpu.direction == Direction.LEFT):
+                cpu.set_direction(Direction.RIGHT)
+            else:
+                cpu.set_direction(Direction.LEFT)
+
+        print(cpu.direction)
         player.move()
+        cpu.move()
 
         # drawing logic
         screen.fill(BLACK)
         player.draw()
+        cpu.draw()
         pygame.display.flip()
 
         # how many updates per second
