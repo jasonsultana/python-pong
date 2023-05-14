@@ -1,5 +1,6 @@
 import pygame
 from paddle import *
+from ball import *
  
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -16,6 +17,7 @@ pygame.display.set_caption("Pong")
  
 player = Paddle(screen, screen.get_width() - 50, 50, 100, WHITE)
 cpu = Paddle(screen, 0, 50, 100, WHITE)
+ball = Ball(screen, screen.get_width() / 2 - 15, screen.get_height() / 2 - 15, 15, RED)
 
 # clock is used to set a max fps
 clock = pygame.time.Clock()
@@ -65,6 +67,7 @@ while running:
         screen.fill(BLACK)
         player.draw()
         cpu.draw()
+        ball.draw()
         pygame.display.flip()
 
         # how many updates per second
