@@ -25,8 +25,6 @@ clock = pygame.time.Clock()
 running = True
 paused = False
 while running:
-    print("loop")
-
     # event handling
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -50,8 +48,6 @@ while running:
             running = False
 
     if not paused:
-        print("game running")
-
         # game logic
         if (cpu.is_at_edge()):
             if (cpu.direction == Direction.LEFT):
@@ -59,9 +55,24 @@ while running:
             else:
                 cpu.set_direction(Direction.LEFT)
 
-        print(cpu.direction)
+        # if ball is at any wall, inverse the angle. I may need to google the math for this.
+        if (ball.is_out_of_bounds()):
+            print(f"Ball out of bounds! Rebounding. Old angle: {ball.angle}")
+            ball.rebound()
+            print(f"New angle: {ball.angle}")
+
+        # if the ball is at any paddle, inverse the angle.
+        if (ball.collides_with(player)):
+            print("Ball collided with player")
+            ball.rebound()
+
+        if (ball.collides_with(cpu)):
+            print("Ball collided with cpu paddle")
+            ball.rebound()
+
         player.move()
         cpu.move()
+        ball.move()
 
         # drawing logic
         screen.fill(BLACK)
