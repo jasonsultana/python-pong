@@ -22,6 +22,9 @@ ball = Ball(screen, screen.get_width() / 2 - 15, screen.get_height() / 2 - 15, 1
 # clock is used to set a max fps
 clock = pygame.time.Clock()
 
+win_sound = pygame.mixer.Sound("assets/win.wav")
+lose_sound = pygame.mixer.Sound("assets/lose.wav")
+
 running = True
 paused = False
 while running:
@@ -39,11 +42,7 @@ while running:
             # cheat codes
             if event.key == pygame.K_p:
                 paused = not paused
-                if paused:
-                    pygame.mixer.music.pause()
-                    continue
-                else:
-                    pygame.mixer.music.play(-1)
+
         elif event.type == pygame.QUIT:
             running = False
 
@@ -55,20 +54,21 @@ while running:
             else:
                 cpu.set_direction(Direction.LEFT)
 
-        # if ball is at any wall, inverse the angle. I may need to google the math for this.
-        if (ball.is_out_of_bounds()):
-            print(f"Ball out of bounds! Rebounding. Old angle: {ball.angle}")
-            ball.rebound()
-            print(f"New angle: {ball.angle}")
+        # if the ball is about to go off screen, play the win or lose sound and just rebound
+        collision_type = ball.get_collision_type_screen()
+        if (collision_type == CollisionType.LEFT):
+            win_sound.play()
+        elif (collision_type == CollisionType.RIGHT):
+            lose_sound.play()
+
+        ball.rebound(collision_type)
 
         # if the ball is at any paddle, inverse the angle.
-        if (ball.collides_with(player)):
-            print("Ball collided with player")
-            ball.rebound()
+        collision_type = ball.get_collision_type(player.rect)
+        ball.rebound(collision_type)
 
-        if (ball.collides_with(cpu)):
-            print("Ball collided with cpu paddle")
-            ball.rebound()
+        collision_type = ball.get_collision_type(cpu.rect)
+        ball.rebound(collision_type)
 
         player.move()
         cpu.move()
